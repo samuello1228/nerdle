@@ -617,44 +617,44 @@ entropy_record_size = 10
 
 count = 0
 for guess in all_equality:
-      count += 1
-      if count%10 == 0:
-        for (colour, frequency) in entropy_record[0][2].items():
-          print(colour, ':', frequency)
-        print("count: ", count)
-        for record in entropy_record:
-          print(record[1], record[0])
-        print("")
+  count += 1
+  if count%10 == 0:
+    for (colour, frequency) in entropy_record[0][2].items():
+      print(colour, ':', frequency)
+    print("count: ", count)
+    for record in entropy_record:
+      print(record[1], record[0])
+    print("")
 
-      #print(guess)
+  #print(guess)
 
-      hist = {}
-      for answer in normal_equality:
-        colour = get_colour(guess, answer)
-        #print(guess, answer, colour)
+  hist = {}
+  for answer in normal_equality:
+    colour = get_colour(guess, answer)
+    #print(guess, answer, colour)
 
-        #if colour not in hist: hist[colour] = []
-        #hist[colour].append(answer)
+    #if colour not in hist: hist[colour] = []
+    #hist[colour].append(answer)
 
-        if colour not in hist: hist[colour] = 0
-        hist[colour] += 1
+    if colour not in hist: hist[colour] = 0
+    hist[colour] += 1
 
-      entropy = 0
-      for (colour, frequency) in hist.items():
-        #print(colour, ':', frequency))
-        entropy += frequency/normal_equality_size * log2(normal_equality_size/frequency)
+  entropy = 0
+  for (colour, frequency) in hist.items():
+    #print(colour, ':', frequency))
+    entropy += frequency/normal_equality_size * log2(normal_equality_size/frequency)
 
-      #print("entropy:", entropy)
-      if len(entropy_record) < entropy_record_size:
-        entropy_record.append((entropy, guess, hist))
-      elif len(entropy_record) == entropy_record_size:
-        entropy_record.append((entropy, guess, hist))
-        entropy_record.sort(reverse=True)
-      else:
-        if entropy > entropy_record[-1][0]:
-          del entropy_record[-1]
-          entropy_record.append((entropy, guess, hist))
-          entropy_record.sort(reverse=True)
+  #print("entropy:", entropy)
+  if len(entropy_record) < entropy_record_size:
+    entropy_record.append((entropy, guess, hist))
+  elif len(entropy_record) == entropy_record_size:
+    entropy_record.append((entropy, guess, hist))
+    entropy_record.sort(reverse=True)
+  else:
+    if entropy > entropy_record[-1][0]:
+      del entropy_record[-1]
+      entropy_record.append((entropy, guess, hist))
+      entropy_record.sort(reverse=True)
 
 for (colour, frequency) in entropy_record[0][2].items():
   print(colour, ':', frequency)
