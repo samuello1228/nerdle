@@ -543,39 +543,6 @@ for i in range(0,len(all_expression)):
   create_equality(all_expression_index[i], all_answer_index[size-i-3], i+1, size-i-2, all_equality)
   create_equality(normal_expression_index[i], normal_answer_index[size-i-3], i+1, size-i-2, normal_equality)
 
-def get_equality(expression, answer, equality):
-  x = []
-  length1 = equality["length1"] -1
-  for index1 in range(equality["first1"],equality["last1"]+1):
-    x.append(expression[length1][index1][1])
-
-  y = []
-  length2 = equality["length2"] -1
-  for index2 in range(equality["first2"],equality["last2"]+1):
-    y.append(answer[length2][index2][1])
-  return (x,y)
-
-#print equality
-#if True:
-if False:
-  print("All equality:")
-  for i in range(0,len(all_equality)):
-    (x,y) = get_equality(all_expression, all_answer, all_equality[i])
-    for left in x:
-      for right in y:
-        equality = left + "=" + right
-        print(equality)
-  print("")
-
-  print("Normal equality:")
-  for i in range(0,len(normal_equality)):
-    (x,y) = get_equality(normal_expression, normal_answer, normal_equality[i])
-    for left in x:
-      for right in y:
-        equality = left + "=" + right
-        print(equality)
-  print("")
-
 answer_aux = []
 colour_aux = []
 for i in range(0,size):
@@ -610,17 +577,22 @@ def get_colour(guess, answer_original):
 
   return output
 
-Total_all_equality = 0
+new_all_equality = []
 for i in range(0,len(all_equality)):
-  (x_all, y_all) = get_equality(all_expression, all_answer, all_equality[i])
-  Total_all_equality += len(x_all) * len(y_all)
+  for index1 in range(all_equality[i]["first1"], all_equality[i]["last1"]+1):
+    for index2 in range(all_equality[i]["first2"], all_equality[i]["last2"]+1):
+      answer = all_expression[all_equality[i]["length1"] -1][index1][1] + "=" + all_answer[all_equality[i]["length2"] -1][index2][1]
+      new_all_equality.append(answer)
+all_equality = new_all_equality
+
+Total_all_equality = len(all_equality)
 print("Total of all equality:", Total_all_equality)
 
 new_normal_equality = []
 for i in range(0,len(normal_equality)):
-  for index1_normal in range(normal_equality[i]["first1"], normal_equality[i]["last1"]+1):
-    for index2_normal in range(normal_equality[i]["first2"], normal_equality[i]["last2"]+1):
-      answer = normal_expression[normal_equality[i]["length1"] -1][index1_normal][1] + "=" + normal_answer[normal_equality[i]["length2"] -1][index2_normal][1]
+  for index1 in range(normal_equality[i]["first1"], normal_equality[i]["last1"]+1):
+    for index2 in range(normal_equality[i]["first2"], normal_equality[i]["last2"]+1):
+      answer = normal_expression[normal_equality[i]["length1"] -1][index1][1] + "=" + normal_answer[normal_equality[i]["length2"] -1][index2][1]
       new_normal_equality.append(answer)
 normal_equality = new_normal_equality
 
@@ -629,13 +601,22 @@ print("Total of normal equality:", normal_equality_size)
 print("Total information:", log2(normal_equality_size))
 print("Total trial:", Total_all_equality*normal_equality_size)
 
+#print equality
+#if True:
+if False:
+  print("All equality:")
+  for x in all_equality: print(x)
+  print("")
+
+  print("Normal equality:")
+  for x in normal_equality: print(x)
+  print("")
+
 entropy_record = []
 entropy_record_size = 10
 
 count = 0
-for i in range(0,len(all_equality)):
-  for index1_all in range(all_equality[i]["first1"], all_equality[i]["last1"]+1):
-    for index2_all in range(all_equality[i]["first2"], all_equality[i]["last2"]+1):
+for guess in all_equality:
       count += 1
       if count%10 == 0:
         for (colour, frequency) in entropy_record[0][2].items():
@@ -643,8 +624,8 @@ for i in range(0,len(all_equality)):
         print("count: ", count)
         for record in entropy_record:
           print(record[1], record[0])
+        print("")
 
-      guess = all_expression[all_equality[i]["length1"] -1][index1_all][1] + "=" + all_answer[all_equality[i]["length2"] -1][index2_all][1]
       #print(guess)
 
       hist = {}
