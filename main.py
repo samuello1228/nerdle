@@ -612,51 +612,86 @@ if False:
   for x in normal_equality: print(x)
   print("")
 
-entropy_record = []
-entropy_record_size = 10
+#setup the initial guess
+if True:
+#if False:
+  guess = "14-2*3=8"
+  print(guess)
 
-count = 0
-for guess in all_equality:
-  count += 1
-  if count%10 == 0:
-    for (colour, frequency) in entropy_record[0][2].items():
-      print(colour, ':', frequency)
-    print("count: ", count)
-    for record in entropy_record:
-      print(record[1], record[0])
-    print("")
-
-  #print(guess)
-
+  #find hist for maximum entropy
   hist = {}
   for answer in normal_equality:
     colour = get_colour(guess, answer)
     #print(guess, answer, colour)
 
-    #if colour not in hist: hist[colour] = []
-    #hist[colour].append(answer)
+    if colour not in hist: hist[colour] = []
+    hist[colour].append(answer)
 
-    if colour not in hist: hist[colour] = 0
-    hist[colour] += 1
+  print("input the colour:")
+  input_colour = input()
+  print(input_colour, "is chosen.")
+  normal_equality = hist[input_colour]
+  normal_equality_size = len(normal_equality)
+  print(normal_equality)
+  print("")
 
-  entropy = 0
-  for (colour, frequency) in hist.items():
-    #print(colour, ':', frequency))
-    entropy += frequency/normal_equality_size * log2(normal_equality_size/frequency)
+#find maximum entropy and play interactively
+while True:
+  count = 0
+  max_entropy = (0,0,0)
+  for guess in all_equality:
+    count += 1
+    if count%100 == 0:
+      for (colour, answer_list) in max_entropy[2].items():
+        print(colour, ':', len(answer_list))
+      print(max_entropy[1], max_entropy[0])
+      print("count: ", count)
+      print("")
 
-  #print("entropy:", entropy)
-  if len(entropy_record) < entropy_record_size:
-    entropy_record.append((entropy, guess, hist))
-  elif len(entropy_record) == entropy_record_size:
-    entropy_record.append((entropy, guess, hist))
-    entropy_record.sort(reverse=True)
-  else:
-    if entropy > entropy_record[-1][0]:
-      del entropy_record[-1]
-      entropy_record.append((entropy, guess, hist))
-      entropy_record.sort(reverse=True)
+    #print(guess)
 
-for (colour, frequency) in entropy_record[0][2].items():
-  print(colour, ':', frequency)
-for record in entropy_record:
-  print(record[1], record[0])
+    #calculate hist for all normal answers
+    hist = {}
+    for answer in normal_equality:
+      colour = get_colour(guess, answer)
+      #print(guess, answer, colour)
+
+      if colour not in hist: hist[colour] = 0
+      hist[colour] += 1
+
+    #calculate entropy
+    entropy = 0
+    for (colour, frequency) in hist.items():
+      #print(colour, ':', frequency))
+      entropy += frequency/normal_equality_size * log2(normal_equality_size/frequency)
+    #print("entropy:", entropy)
+
+    #save maximum entropy
+    if entropy > max_entropy[0]:
+      #get all corresponding normal answers again
+      hist = {}
+      for answer in normal_equality:
+        colour = get_colour(guess, answer)
+        #print(guess, answer, colour)
+
+        if colour not in hist: hist[colour] = []
+        hist[colour].append(answer)
+      max_entropy = (entropy, guess, hist)
+
+  for (colour, answer_list) in max_entropy[2].items():
+    print(colour, ':', len(answer_list))
+  print(max_entropy[1], max_entropy[0])
+  print("count: ", count)
+  print("")
+
+  print("input the colour:")
+  input_colour = input()
+  print(input_colour, "is chosen.")
+  normal_equality = max_entropy[2][input_colour]
+  normal_equality_size = len(normal_equality)
+  print(normal_equality)
+  print("")
+
+  if normal_equality_size <= 1:
+    print("The answer is", normal_equality[0])
+    break
