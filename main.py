@@ -144,7 +144,7 @@ if not ReadFromFile:
               expression[i] = (int(expression[i]), 1)
               reading_number = True
 
-              #check whether 00000111
+              #check whether contain leading zero
               if i <= len(expression)-2 and expression[i][0] == 0 and expression[i+1] in number:
                 isNormal = False
                 if error_message == "": error_message = "(Not normal: the leftmost digit is 0.)"
@@ -164,7 +164,7 @@ if not ReadFromFile:
         i = 0
         while True:
           if expression[i] == "+" or expression[i] == "-":
-            if not (i >= 1 and expression[i-1] != "*" and expression[i-1] != "/"):
+            if i == 0 or expression[i-1] == "*" or expression[i-1] == "/":
               if expression[i] == "+":
                 isNormal = False
                 if error_message == "": error_message = "(Not normal: non-negative integer has + sign.)"
