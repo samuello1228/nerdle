@@ -59,6 +59,7 @@ if not ReadFromFile:
       error_message = ""
       isNormal = True
       isAnswer = True
+      isZero = False
       while index <= expression_last_index:
         new_letter = letter[expression_index[index]]
         if len(expression) == 0:
@@ -169,9 +170,8 @@ if not ReadFromFile:
                 if error_message == "": error_message = "(Not normal: non-negative integer has + sign.)"
               elif expression[i] == "-":
                 expression[i+1] = (- expression[i+1][0], 1)
-                if expression[i+1][0] == 0:
-                  isNormal = False
-                  if error_message == "": error_message = "(Not normal: -0)"
+                isNormal = False
+                if error_message == "": error_message = "(Not normal: contain negative sign.)"
               del expression[i]
 
             else: i += 1
@@ -180,6 +180,15 @@ if not ReadFromFile:
 
           if i == len(expression): break
         if isPrint: print("->", expression)
+
+        #check whether the integer is zero
+        i = 0
+        while True:
+          if expression[i] not in operator:
+            if expression[i][0] == 0: isZero = True
+
+          i += 1
+          if i == len(expression): break
 
         #calculate "*" and "/"
         i = 0
@@ -265,7 +274,7 @@ if not ReadFromFile:
           expression_original += letter[expression_index[i]]
 
         all_expression[length-1].append((expression[0][0], expression_original))
-        if isNormal: normal_expression[length-1].append((expression[0][0], expression_original))
+        if isNormal and not isZero: normal_expression[length-1].append((expression[0][0], expression_original))
         if isAnswer: all_answer[length-1].append((expression[0][0], expression_original))
         if isNormal and isAnswer: normal_answer[length-1].append((expression[0][0], expression_original))
 
