@@ -609,6 +609,7 @@ normal_equality_size = len(normal_equality)
 print("Total of normal equality:", normal_equality_size)
 print("Total information:", log2(normal_equality_size))
 print("Total trial:", Total_all_equality*normal_equality_size)
+print("")
 
 #print equality
 #if True:
@@ -651,11 +652,7 @@ while True:
   for guess in all_equality:
     count += 1
     if count%100 == 0:
-      for (colour, answer_list) in max_entropy[2].items():
-        print(colour, ':', len(answer_list))
-      print(max_entropy[1], max_entropy[0])
-      print("count: ", count)
-      print("")
+      print("count:", count)
 
     #print(guess)
 
@@ -687,10 +684,16 @@ while True:
         hist[colour].append(answer)
       max_entropy = (entropy, guess, hist)
 
+      for (colour, answer_list) in max_entropy[2].items():
+        print(colour, ':', len(answer_list))
+      print(max_entropy[1], max_entropy[0])
+      print("count:", count)
+      print("")
+
   for (colour, answer_list) in max_entropy[2].items():
     print(colour, ':', len(answer_list))
   print(max_entropy[1], max_entropy[0])
-  print("count: ", count)
+  print("count:", count)
   print("")
 
   print("input the colour:")
