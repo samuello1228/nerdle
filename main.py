@@ -593,6 +593,7 @@ for i in range(0,len(all_equality)):
       answer = all_expression[all_equality[i]["length1"] -1][index1][1] + "=" + all_answer[all_equality[i]["length2"] -1][index2][1]
       new_all_equality.append(answer)
 all_equality = new_all_equality
+all_equality.sort()
 
 Total_all_equality = len(all_equality)
 print("Total of all equality:", Total_all_equality)
@@ -604,12 +605,34 @@ for i in range(0,len(normal_equality)):
       answer = normal_expression[normal_equality[i]["length1"] -1][index1][1] + "=" + normal_answer[normal_equality[i]["length2"] -1][index2][1]
       new_normal_equality.append(answer)
 normal_equality = new_normal_equality
+normal_equality.sort()
 
 normal_equality_size = len(normal_equality)
 print("Total of normal equality:", normal_equality_size)
 print("Total information:", log2(normal_equality_size))
 print("Total trial:", Total_all_equality*normal_equality_size)
 print("")
+
+#get exotic equality
+exotic_equality = []
+index1 = 0
+index2 = 0
+while True:
+  if normal_equality[index1] == all_equality[index2]:
+    index1 += 1
+    index2 += 1
+
+  elif normal_equality[index1] > all_equality[index2]:
+    exotic_equality.append(all_equality[index2])
+    index2 += 1
+
+  if index1 == len(normal_equality) or index2 == len(all_equality):
+    for i in range(index2, len(all_equality)):
+      exotic_equality.append(all_equality[i])
+    break
+
+#put normal_equality at the beginning
+all_equality = normal_equality + exotic_equality
 
 #print equality
 #if True:
@@ -625,7 +648,7 @@ if False:
 #setup the initial guess
 if True:
 #if False:
-  guess = "14-2*3=8"
+  guess = "48-32=16"
   print(guess)
 
   #find hist for maximum entropy
@@ -636,6 +659,12 @@ if True:
 
     if colour not in hist: hist[colour] = []
     hist[colour].append(answer)
+
+  #calculate entropy
+  entropy = 0
+  for (colour, answer_list) in hist.items():
+    entropy += len(answer_list)/normal_equality_size * log2(normal_equality_size/len(answer_list))
+  print("entropy:", entropy)
 
   print("input the colour:")
   input_colour = input()
