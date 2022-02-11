@@ -1,4 +1,5 @@
 from math import gcd, log2, log10, trunc
+import json
 
 def reduction(x):
   h = gcd(x[0],x[1])
@@ -723,14 +724,13 @@ if True:
   print("entropy:", entropy)
   print("")
 
-  max_entropy = (entropy, guess, hist)
+  max_entropy = (entropy, initial_guess, hist)
 
 #play interactively
-while True:
-#while False:
+#while True:
+while False:
   if max_entropy != None:
-    print("input the colour:")
-    input_colour = input()
+    input_colour = input("input the colour:")
     print(input_colour, "is chosen.")
     normal_equality = max_entropy[2][input_colour]
     print(normal_equality)
@@ -746,3 +746,75 @@ while True:
     print(colour, ':', len(answer_list))
   print(max_entropy[1], max_entropy[0])
   print("")
+
+score = []
+def exhaustive_search(hist, depth):
+  count = 0
+  path_info = " " * (size + (size+4)*2*depth)
+  for colour in hist.keys():
+    count +=1
+    if depth == 0: print("progress:", count, "/", len(hist))
+    output = path_info + " -> " + colour
+    #print(output)
+
+    current_normal_equality = hist[colour]
+    #print(current_normal_equality)
+
+    if len(current_normal_equality) == 1:
+      all_green = "G" * size
+      if colour == all_green:
+        score.append((current_normal_equality[0], depth+1))
+        output += " (score: " + str(depth+1) + ")"
+      else:
+        score.append((current_normal_equality[0], depth+2))
+        output +=  " -> " + current_normal_equality[0] + " -> " + all_green + " (score: " + str(depth+2) + ")"
+      print(output)
+
+      hist[colour] = (0, current_normal_equality[0], [])
+      continue
+
+    current_max_entropy = find_maximum_entropy(all_equality, current_normal_equality)
+    output += " -> " + current_max_entropy[1]
+    print(output)
+
+    #print(current_max_entropy[1], current_max_entropy[0])
+    #print("")
+
+    exhaustive_search(current_max_entropy[2], depth+1)
+
+    hist[colour] = current_max_entropy
+
+#Save best_guess.txt
+#if True:
+if False:
+  exhaustive_search(max_entropy[2], 0)
+
+  expected_score = 0
+  for x in score:
+    expected_score += x[1]
+  expected_score = expected_score/len(score)
+  print("expected_score:", expected_score)
+
+  #print(max_entropy)
+  with open("data/best_guess.txt", "w") as f:
+    json.dump(max_entropy, f)
+
+#Load best_guess.txt
+#play interactively
+if True:
+#if False:
+  with open("data/best_guess.txt") as f:
+    max_entropy = json.load(f)
+
+  while True:
+    print(max_entropy[1])
+
+    if max_entropy[2] != []:
+      input_colour = input("input the colour:")
+      print(input_colour, "is chosen.")
+      print("")
+      max_entropy = max_entropy[2][input_colour]
+
+    else:
+      print("The answer is", max_entropy[1])
+      break
