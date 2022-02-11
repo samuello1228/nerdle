@@ -645,37 +645,8 @@ if False:
   for x in normal_equality: print(x)
   print("")
 
-#setup the initial guess
-if True:
-#if False:
-  guess = "48-32=16"
-  print(guess)
-
-  #find hist for maximum entropy
-  hist = {}
-  for answer in normal_equality:
-    colour = get_colour(guess, answer)
-    #print(guess, answer, colour)
-
-    if colour not in hist: hist[colour] = []
-    hist[colour].append(answer)
-
-  #calculate entropy
-  entropy = 0
-  for (colour, answer_list) in hist.items():
-    entropy += len(answer_list)/normal_equality_size * log2(normal_equality_size/len(answer_list))
-  print("entropy:", entropy)
-
-  print("input the colour:")
-  input_colour = input()
-  print(input_colour, "is chosen.")
-  normal_equality = hist[input_colour]
+def find_maximum_entropy(all_equality, normal_equality):
   normal_equality_size = len(normal_equality)
-  print(normal_equality)
-  print("")
-
-#find maximum entropy and play interactively
-while True:
   count = 0
   max_entropy = (0,0,0)
   for guess in all_equality:
@@ -731,14 +702,48 @@ while True:
   print("count:", count)
   print("")
 
+  return max_entropy
+
+#setup the initial guess
+if True:
+#if False:
+  guess = "48-32=16"
+  print(guess)
+
+  #find hist for maximum entropy
+  hist = {}
+  for answer in normal_equality:
+    colour = get_colour(guess, answer)
+    #print(guess, answer, colour)
+
+    if colour not in hist: hist[colour] = []
+    hist[colour].append(answer)
+
+  #calculate entropy
+  entropy = 0
+  for (colour, answer_list) in hist.items():
+    entropy += len(answer_list)/normal_equality_size * log2(normal_equality_size/len(answer_list))
+  print("entropy:", entropy)
+
+  print("input the colour:")
+  input_colour = input()
+  print(input_colour, "is chosen.")
+  normal_equality = hist[input_colour]
+  print(normal_equality)
+  print("")
+
+#play interactively
+while True:
+#while False:
+  max_entropy = find_maximum_entropy(all_equality, normal_equality)
+
   print("input the colour:")
   input_colour = input()
   print(input_colour, "is chosen.")
   normal_equality = max_entropy[2][input_colour]
-  normal_equality_size = len(normal_equality)
   print(normal_equality)
   print("")
 
-  if normal_equality_size <= 1:
+  if len(normal_equality) <= 1:
     print("The answer is", normal_equality[0])
     break
