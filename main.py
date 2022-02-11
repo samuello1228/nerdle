@@ -645,14 +645,14 @@ if False:
   for x in normal_equality: print(x)
   print("")
 
-def find_maximum_entropy(all_equality, normal_equality):
+def find_maximum_entropy(all_equality, normal_equality, isPrint=False):
   normal_equality_size = len(normal_equality)
   count = 0
   max_entropy = (0,0,0)
   for guess in all_equality:
     count += 1
     if count%100 == 0:
-      print("count:", count)
+      if isPrint: print("count:", count)
 
     #print(guess)
 
@@ -690,17 +690,12 @@ def find_maximum_entropy(all_equality, normal_equality):
 
       if isAllOne: break
 
-      for (colour, answer_list) in max_entropy[2].items():
-        print(colour, ':', len(answer_list))
-      print(max_entropy[1], max_entropy[0])
-      print("count:", count)
-      print("")
-
-  for (colour, answer_list) in max_entropy[2].items():
-    print(colour, ':', len(answer_list))
-  print(max_entropy[1], max_entropy[0])
-  print("count:", count)
-  print("")
+      if isPrint:
+        for (colour, answer_list) in max_entropy[2].items():
+          print(colour, ':', len(answer_list))
+        print(max_entropy[1], max_entropy[0])
+        print("count:", count)
+        print("")
 
   return max_entropy
 
@@ -736,6 +731,11 @@ if True:
 while True:
 #while False:
   max_entropy = find_maximum_entropy(all_equality, normal_equality)
+
+  for (colour, answer_list) in max_entropy[2].items():
+    print(colour, ':', len(answer_list))
+  print(max_entropy[1], max_entropy[0])
+  print("")
 
   print("input the colour:")
   input_colour = input()
