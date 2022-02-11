@@ -699,6 +699,7 @@ def find_maximum_entropy(all_equality, normal_equality, isPrint=False):
 
   return max_entropy
 
+max_entropy = None
 #setup the initial guess
 if True:
 #if False:
@@ -720,30 +721,26 @@ if True:
     entropy += len(answer_list)/normal_equality_size * log2(normal_equality_size/len(answer_list))
   print("entropy:", entropy)
 
-  print("input the colour:")
-  input_colour = input()
-  print(input_colour, "is chosen.")
-  normal_equality = hist[input_colour]
-  print(normal_equality)
-  print("")
+  max_entropy = (entropy, guess, hist)
 
 #play interactively
 while True:
 #while False:
+  if max_entropy != None:
+    print("input the colour:")
+    input_colour = input()
+    print(input_colour, "is chosen.")
+    normal_equality = max_entropy[2][input_colour]
+    print(normal_equality)
+    print("")
+
+  if len(normal_equality) <= 1:
+    print("The answer is", normal_equality[0])
+    break
+
   max_entropy = find_maximum_entropy(all_equality, normal_equality)
 
   for (colour, answer_list) in max_entropy[2].items():
     print(colour, ':', len(answer_list))
   print(max_entropy[1], max_entropy[0])
   print("")
-
-  print("input the colour:")
-  input_colour = input()
-  print(input_colour, "is chosen.")
-  normal_equality = max_entropy[2][input_colour]
-  print(normal_equality)
-  print("")
-
-  if len(normal_equality) <= 1:
-    print("The answer is", normal_equality[0])
-    break
