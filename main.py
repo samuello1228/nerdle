@@ -1,4 +1,4 @@
-from math import gcd, log2
+from math import gcd, log2, log10, trunc
 
 def reduction(x):
   h = gcd(x[0],x[1])
@@ -7,7 +7,7 @@ def reduction(x):
   return (p,q)
 
 number = ["0","1","2","3","4","5","6","7","8","9"]
-#number = ["0","1"]
+#number = ["0","1","2","3"]
 base = len(number)
 operator = ["+","-","*","/"]
 letter = number + operator
@@ -651,7 +651,7 @@ def find_maximum_entropy(all_equality, normal_equality, isPrint=False):
   max_entropy = (0,0,0)
   for guess in all_equality:
     count += 1
-    if count%100 == 0:
+    if count%(10**(6 - trunc(log10(normal_equality_size)))) == 0:
       if isPrint: print("count:", count)
 
     #print(guess)
@@ -703,14 +703,15 @@ max_entropy = None
 #setup the initial guess
 if True:
 #if False:
-  guess = "48-32=16"
-  print(guess)
+  initial_guess = "48-32=16"
+  #initial_guess = "1*3/01=3"
+  print(initial_guess)
 
   #find hist for maximum entropy
   hist = {}
   for answer in normal_equality:
-    colour = get_colour(guess, answer)
-    #print(guess, answer, colour)
+    colour = get_colour(initial_guess, answer)
+    #print(initial_guess, answer, colour)
 
     if colour not in hist: hist[colour] = []
     hist[colour].append(answer)
@@ -720,6 +721,7 @@ if True:
   for (colour, answer_list) in hist.items():
     entropy += len(answer_list)/normal_equality_size * log2(normal_equality_size/len(answer_list))
   print("entropy:", entropy)
+  print("")
 
   max_entropy = (entropy, guess, hist)
 
