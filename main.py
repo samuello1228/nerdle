@@ -705,13 +705,19 @@ while True:
     if entropy > max_entropy[0]:
       #get all corresponding normal answers again
       hist = {}
+      isAllOne = True
       for answer in normal_equality:
         colour = get_colour(guess, answer)
         #print(guess, answer, colour)
 
         if colour not in hist: hist[colour] = []
+        else: isAllOne = False
+
         hist[colour].append(answer)
+
       max_entropy = (entropy, guess, hist)
+
+      if isAllOne: break
 
       for (colour, answer_list) in max_entropy[2].items():
         print(colour, ':', len(answer_list))
