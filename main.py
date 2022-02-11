@@ -730,7 +730,7 @@ if True:
 #while True:
 while False:
   if max_entropy != None:
-    input_colour = input("input the colour:")
+    input_colour = input("input the colour:").upper()
     print(input_colour, "is chosen.")
     normal_equality = max_entropy[2][input_colour]
     print(normal_equality)
@@ -810,7 +810,7 @@ if True:
     print(max_entropy[1])
 
     if max_entropy[2] != []:
-      input_colour = input("input the colour:")
+      input_colour = input("input the colour:").upper()
       print(input_colour, "is chosen.")
       print("")
       max_entropy = max_entropy[2][input_colour]
