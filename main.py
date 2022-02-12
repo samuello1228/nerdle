@@ -802,8 +802,8 @@ if False:
 
 #Load best_guess.txt
 #play interactively
-if True:
-#if False:
+#if True:
+if False:
   with open("data/best_guess.txt") as f:
     max_entropy = json.load(f)
 
@@ -823,3 +823,70 @@ if True:
         print("The answer is", max_entropy[1])
         print("")
         break
+
+def isExistOneEquality(all_equality, normal_equality, depth, max_depth):
+  count = 0
+  isMaxDepth = (depth+2 == max_depth)
+  for guess in all_equality:
+    count += 1
+    if depth == 0: print("progress:", count, "/" , len(all_equality))
+
+    #calculate hist for all normal answers
+    hist = {}
+    isAllOne = True
+    for answer in normal_equality:
+      colour = get_colour(guess, answer)
+      #print(guess, answer, colour)
+      
+      if colour not in hist:
+        hist[colour] = [answer]
+      else:
+        hist[colour].append(answer)
+        isAllOne = False
+        if isMaxDepth: break
+
+    if isMaxDepth:
+      if isAllOne: return (guess, hist)
+    
+    else:
+      isAllFound = True
+      for (current_colour, current_normal_equality) in hist.items():
+        tree = isExistOneEquality(all_equality, current_normal_equality, depth+1, max_depth)
+
+        if tree == None:
+          isAllFound = False
+          break
+        
+        hist[current_colour] = tree
+      
+      if isAllFound: return (guess, hist)
+
+  return None
+
+def print_tree(colour, tree, depth):
+  if depth == 0: output = ""
+  else:
+    output = " " * ((size+4)*2*(depth-1) +size)
+    output += " -> " + colour
+    
+  if len(tree) == 1:
+    if colour == all_green:
+      output += " (score: " + str(depth) + ")"
+    else:
+      output +=  " -> " + tree[0] + " -> " + all_green + " (score: " + str(depth+1) + ")"
+    print(output)
+    return
+    
+  if depth == 0: output += tree[0]
+  else: output += " -> " + tree[0]
+  print(output)
+  
+  for (current_colour, current_normal_equality) in tree[1].items():
+    print_tree(current_colour, tree[1][current_colour], depth+1)
+
+#find minimum of depth
+if True:
+#if False:
+  tree = isExistOneEquality(all_equality, normal_equality, 0, 3)
+  if tree != None: print_tree("", tree, 0)
+  else: print("Not found.")
