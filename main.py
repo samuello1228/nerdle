@@ -659,12 +659,16 @@ def find_maximum_entropy(all_equality, normal_equality, isPrint=False):
 
     #calculate hist for all normal answers
     hist = {}
+    isAllOne = True
     for answer in normal_equality:
       colour = get_colour(guess, answer)
       #print(guess, answer, colour)
 
-      if colour not in hist: hist[colour] = 0
-      hist[colour] += 1
+      if colour not in hist:
+        hist[colour] = 1
+      else:
+        hist[colour] += 1
+        isAllOne = False
 
     #calculate entropy
     entropy = 0
@@ -677,14 +681,11 @@ def find_maximum_entropy(all_equality, normal_equality, isPrint=False):
     if entropy > max_entropy[0]:
       #get all corresponding normal answers again
       hist = {}
-      isAllOne = True
       for answer in normal_equality:
         colour = get_colour(guess, answer)
         #print(guess, answer, colour)
 
         if colour not in hist: hist[colour] = []
-        else: isAllOne = False
-
         hist[colour].append(answer)
 
       max_entropy = (entropy, guess, hist)
