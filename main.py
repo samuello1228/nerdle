@@ -749,46 +749,46 @@ while False:
   print("")
 
 score = []
-def exhaustive_search(hist, depth):
-  count = 0
-  path_info = " " * (size + (size+4)*2*depth)
-  for colour in hist.keys():
-    count +=1
-    if depth == 0: print("progress:", count, "/", len(hist))
-    output = path_info + " -> " + colour
-    #print(output)
+all_green = "G" * size
+def exhaustive_search(colour, normal_equality, depth):
+  if depth == 0: output = ""
+  else:
+    output = " " * ((size+4)*2*(depth-1) +size)
+    output += " -> " + colour
 
-    current_normal_equality = hist[colour]
-    #print(current_normal_equality)
-
-    if len(current_normal_equality) == 1:
-      all_green = "G" * size
-      if colour == all_green:
-        score.append((current_normal_equality[0], depth+1))
-        output += " (score: " + str(depth+1) + ")"
-      else:
-        score.append((current_normal_equality[0], depth+2))
-        output +=  " -> " + current_normal_equality[0] + " -> " + all_green + " (score: " + str(depth+2) + ")"
-      print(output)
-
-      hist[colour] = (0, current_normal_equality[0], [])
-      continue
-
-    current_max_entropy = find_maximum_entropy(all_equality, current_normal_equality)
-    output += " -> " + current_max_entropy[1]
+  if len(normal_equality) == 1:
+    if colour == all_green:
+      score.append((normal_equality[0], depth))
+      output += " (score: " + str(depth) + ")"
+    else:
+      score.append((normal_equality[0], depth+1))
+      output +=  " -> " + normal_equality[0] + " -> " + all_green + " (score: " + str(depth+1) + ")"
     print(output)
 
-    #print(current_max_entropy[1], current_max_entropy[0])
-    #print("")
+    return (0, normal_equality[0], [])
 
-    exhaustive_search(current_max_entropy[2], depth+1)
+  max_entropy = find_maximum_entropy(all_equality, normal_equality)
+  
+  if depth == 0: output += max_entropy[1]
+  else: output += " -> " + max_entropy[1]
+  print(output)
 
-    hist[colour] = current_max_entropy
+  #print(max_entropy[1], max_entropy[0])
+  #print("")
+  
+  for (current_colour, current_normal_equality) in max_entropy[2].items():
+    max_entropy[2][current_colour] = exhaustive_search(current_colour, current_normal_equality, depth+1)
+
+  return max_entropy
 
 #Save best_guess.txt
 #if True:
 if False:
-  exhaustive_search(max_entropy[2], 0)
+  count = 0
+  for (current_colour, current_normal_equality) in max_entropy[2].items():
+    count +=1
+    print("progress:", count, "/", len(max_entropy[2]))
+    max_entropy[2][current_colour] = exhaustive_search(current_colour, current_normal_equality, 1)
 
   expected_score = 0
   for x in score:
