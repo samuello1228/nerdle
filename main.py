@@ -806,15 +806,19 @@ if True:
   with open("data/best_guess.txt") as f:
     max_entropy = json.load(f)
 
+  inital_max_entropy = max_entropy
   while True:
-    print(max_entropy[1])
+    max_entropy = inital_max_entropy
+    while True:
+      print(max_entropy[1])
 
-    if max_entropy[2] != []:
-      input_colour = input("input the colour:").upper()
-      print(input_colour, "is chosen.")
-      print("")
-      max_entropy = max_entropy[2][input_colour]
+      if max_entropy[2] != []:
+        input_colour = input("input the colour:").upper()
+        print(input_colour, "is chosen.")
+        print("")
+        max_entropy = max_entropy[2][input_colour]
 
-    else:
-      print("The answer is", max_entropy[1])
-      break
+      else:
+        print("The answer is", max_entropy[1])
+        print("")
+        break
