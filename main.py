@@ -851,13 +851,14 @@ def isExistOneEquality(all_equality, normal_equality, depth, max_depth):
     else:
       isAllFound = True
       for (current_colour, current_normal_equality) in hist.items():
-        tree = isExistOneEquality(all_equality, current_normal_equality, depth+1, max_depth)
-
-        if tree == None:
-          isAllFound = False
-          break
+        if len(current_normal_equality) >= 2:
+          tree = isExistOneEquality(all_equality, current_normal_equality, depth+1, max_depth)
+          
+          if tree == None:
+            isAllFound = False
+            break
         
-        hist[current_colour] = tree
+          hist[current_colour] = tree
       
       if isAllFound: return (guess, hist)
 
